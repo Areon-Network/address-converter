@@ -44,6 +44,7 @@ const bech32Chain = (name, prefix) => ({
 
 const ETH = hexChecksumChain('ETH');
 const AREON = bech32Chain('AREON', 'areon');
+const AREONVAL = bech32Chain('AREON', 'areonvaloper');
 
 exports.ethToAreon = (ethAddress) => {
     const data = ETH.decoder(ethAddress);
@@ -54,3 +55,9 @@ exports.areonToEth = (areonAddress) => {
     const data = AREON.decoder(areonAddress);
     return ETH.encoder(data);
 };
+
+exports.validatorToEth = (areonAddress) => {
+    const data = AREONVAL.decoder(areonAddress);
+    return ETH.encoder(data);
+};
+
