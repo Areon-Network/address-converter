@@ -1,63 +1,65 @@
 const bech32 = require("bech32");
 const addrCodec = require("crypto-addr-codec");
 
-const checksummedHexDecoder = (chainId) => {
+const checksummedHexDecoder = (chainId = null) => {
     return (data) => {
-        const stripped = (0, addrCodec.stripHexPrefix)(data);
-        if (!(0, addrCodec.isValidChecksumAddress)(data, chainId || null) &&
+        const stripped = addrCodec.stripHexPrefix(data);
+        if (!addrCodec.isValidChecksumAddress(data, chainId) &&
             stripped !== stripped.toLowerCase() &&
             stripped !== stripped.toUpperCase()) {
-            throw Error('Invalid address checksum');
+            throw new Error(`Invalid address checksum for chainId: ${chainId}`);
         }
-        return Buffer.from((0, addrCodec.stripHexPrefix)(data), 'hex');
+        return Buffer.from(stripped, 'hex');
     };
 }
-const checksummedHexEncoder = (chainId) => {
-    return (data) => (0, addrCodec.toChecksumAddress)(data.toString('hex'), chainId || null);
+
+const checksummedHexEncoder = (chainId = null) => {
+    return (data) => addrCodec.toChecksumAddress(data.toString('hex'), chainId);
 }
 
 const bech32Encoder = (prefix) => {
     return (data) => bech32.bech32.encode(prefix, bech32.bech32.toWords(data));
 }
 
-const makeBech32Decoder = (currentPrefix) => {
+const makeBech32Decoder = (expectedPrefix) => {
     return (data) => {
         const { prefix, words } = bech32.bech32.decode(data);
-        if (prefix !== currentPrefix) {
-            throw Error('Unrecognised address format');
+        if (prefix !== expectedPrefix) {
+            throw new Error(`Unrecognized address format. Expected prefix: ${expectedPrefix}, got: ${prefix}`);
         }
         return Buffer.from(bech32.bech32.fromWords(words));
     };
 }
 
-const hexChecksumChain = (name, chainId) => ({
-    decoder: checksummedHexDecoder(chainId),
-    encoder: checksummedHexEncoder(chainId),
-    name,
-});
+// Chain definitions
+const ETH = {
+    decoder: checksummedHexDecoder(),
+    encoder: checksummedHexEncoder(),
+};
 
-const bech32Chain = (name, prefix) => ({
-    decoder: makeBech32Decoder(prefix),
-    encoder: bech32Encoder(prefix),
-    name,
-});
+const AREON = {
+    decoder: makeBech32Decoder('areon'),
+    encoder: bech32Encoder('areon'),
+};
 
-const ETH = hexChecksumChain('ETH');
-const AREON = bech32Chain('AREON', 'areon');
-const AREONVAL = bech32Chain('AREON', 'areonvaloper');
+const AREONVAL = {
+    decoder: makeBech32Decoder('areonvaloper'),
+    encoder: bech32Encoder('areonvaloper'),
+};
 
-exports.ethToAreon = (ethAddress) => {
+const ethToAreon = (ethAddress) => {
     const data = ETH.decoder(ethAddress);
     return AREON.encoder(data);
 };
 
-exports.areonToEth = (areonAddress) => {
+const areonToEth = (areonAddress) => {
     const data = AREON.decoder(areonAddress);
     return ETH.encoder(data);
 };
 
-exports.validatorToEth = (areonAddress) => {
-    const data = AREONVAL.decoder(areonAddress);
+const validatorToEth = (areonValAddress) => {
+    const data = AREONVAL.decoder(areonValAddress);
     return ETH.encoder(data);
 };
 
+module.exports = { ethToAreon, areonToEth, validatorToEth };
