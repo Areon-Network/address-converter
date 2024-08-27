@@ -1,13 +1,19 @@
-const {ethToAreon, areonToEth, validatorToEth} = require("./converter");
+const { ethToAreon, ethToValidator, areonToEth, areonToValidator, validatorToAreon, validatorToEth } = require("./converter");
 
-const toHex = ethToAreon("0x123456f6Ed06F81eb1Edc6fccE34414E2C21fE5c");
-console.log(toHex);
+console.log(ethToAreon("0x123456f6Ed06F81eb1Edc6fccE34414E2C21fE5c"))
 // areon1zg69dahdqmupav0dcm7vudzpfckzrljum4nsgt
 
-const fromHex = areonToEth("areon1zg69dahdqmupav0dcm7vudzpfckzrljum4nsgt");
-console.log(fromHex);
+console.log(ethToValidator("0x123456f6Ed06F81eb1Edc6fccE34414E2C21fE5c"))
+// areonvaloper1zg69dahdqmupav0dcm7vudzpfckzrljulvgtt6
+
+console.log(areonToEth("areon1zg69dahdqmupav0dcm7vudzpfckzrljum4nsgt"))
 // 0x123456f6Ed06F81eb1Edc6fccE34414E2C21fE5c
 
-const validatorToHex = validatorToEth("areonvaloper1k6ews5uuxh9x3r4q663h2pdqatc9lxstm8w9c3");
-console.log(validatorToHex);
-// 0xb6B2E8539C35CA688Ea0D6a37505A0EAf05f9A0B
+console.log(areonToValidator("areon1zg69dahdqmupav0dcm7vudzpfckzrljum4nsgt"))
+// areonvaloper1zg69dahdqmupav0dcm7vudzpfckzrljulvgtt6
+
+console.log(validatorToAreon("areonvaloper1zg69dahdqmupav0dcm7vudzpfckzrljulvgtt6"))
+// areon1zg69dahdqmupav0dcm7vudzpfckzrljum4nsgt
+
+console.log(validatorToEth("areonvaloper1zg69dahdqmupav0dcm7vudzpfckzrljulvgtt6"))
+// 0x123456f6Ed06F81eb1Edc6fccE34414E2C21fE5c

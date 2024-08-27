@@ -1,2 +1,2 @@
 # address-converter
-AreonChain Address Converter
+Areon Address Converter

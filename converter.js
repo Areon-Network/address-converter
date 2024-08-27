@@ -52,9 +52,24 @@ const ethToAreon = (ethAddress) => {
     return AREON.encoder(data);
 };
 
+const ethToValidator = (ethAddress) => {
+    const data = ETH.decoder(ethAddress);
+    return AREONVAL.encoder(data);
+};
+
 const areonToEth = (areonAddress) => {
     const data = AREON.decoder(areonAddress);
     return ETH.encoder(data);
+};
+
+const areonToValidator = (areonAddress) => {
+    const data = AREON.decoder(areonAddress);
+    return AREONVAL.encoder(data);
+};
+
+const validatorToAreon = (areonValAddress) => {
+    const data = AREONVAL.decoder(areonValAddress);
+    return AREON.encoder(data);
 };
 
 const validatorToEth = (areonValAddress) => {
@@ -62,4 +77,4 @@ const validatorToEth = (areonValAddress) => {
     return ETH.encoder(data);
 };
 
-module.exports = { ethToAreon, areonToEth, validatorToEth };
+module.exports = { ethToAreon, ethToValidator, areonToEth, areonToValidator, validatorToAreon, validatorToEth };
